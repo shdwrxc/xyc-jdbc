@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- in-memory database and a datasource -->
+    <!--<jdbc:embedded-database id="dataSource">-->
+        <!--<jdbc:script location="classpath:database/jpetstore-hsqldb-schema.sql"/>-->
+        <!--<jdbc:script location="classpath:database/jpetstore-hsqldb-dataload.sql"/>-->
+    <!--</jdbc:embedded-database>-->
+
+    <!--默认值在C3P0Defaults中，可以查阅-->
+    <!--c3p0的配置里参数必须要加jdbc.-->
+    <!--注意下配置里的参数，user的value有时候会写${username}，但这是不行的，username是spring关键字，会和spring冲突，不要用这个关键字，加点前缀，改个名字都可，可以直接使用user。-->
+    <!--jdbc.properties和这里的设置，user对于的value不要定义username-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${driver}"/>
+        <property name="jdbcUrl" value="${url}"/>
+        <property name="user" value="${user}"/>
+        <property name="password" value="${password}"/>
+        <property name="initialPoolSize" value="5"/>
+        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="5"/>
+        <!--当连接池用完时，每次增加多少个线程-->
+        <property name="acquireIncrement" value="2"/>
+        <!--超过空闲时间的连接将会关闭，单位秒-->
+        <property name="maxIdleTime" value="5"/>
+        <!--应用获取连接时，如果超过checkoutTimeout还没获得连接，抛出异常。单位毫秒-->
+        <property name="checkoutTimeout" value="1000"/>
+    </bean>
+
+    <!-- transaction manager, use DataSourceTransactionManager" for JDBC local tx -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- enable transaction demarcation with annotations -->
+    <tx:annotation-driven />
+
+    <!--<tx:advice id="txAdvice" transaction-manager="transactionManager" >-->
+        <!--<tx:attributes>-->
+            <!--<tx:method name="get*" read-only="true" propagation="SUPPORTS"/>-->
+            <!--<tx:method name="find*" read-only="true" propagation="SUPPORTS" no-rollback-for="java.lang.RuntimeException"/>-->
+            <!--<tx:method name="save*" read-only="false" propagation="REQUIRED"/>-->
+            <!--<tx:method name="delete*" read-only="false" propagation="REQUIRED"/>-->
+            <!--<tx:method name="update*" read-only="false" propagation="REQUIRED"/>-->
+            <!--<tx:method name="*" read-only="false" propagation="REQUIRED"/>-->
+        <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+    <!--<aop:config proxy-target-class="true">-->
+        <!--<aop:pointcut id="mybatis" expression="execution(* org.xyc.jdbc.mybatis3..*..service..*Service+.*(..))"/>-->
+        <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="mybatis"/>-->
+    <!--</aop:config>-->
+
+    <!-- define the SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!--if mapperLocations is null, org.apache.ibatis.binding.BindingException: Invalid bound statement (not found): org.xyc.jdbc.mybatis3.spring.ArcturisMapper.selectAll-->
+        <property name="mapperLocations" value="classpath:mappers/*.xml" />
+        <!--这里的作用是生成别名，别名的名字就是类名，不区分大小写。如果这里不写，具体的model加注解也快，@Alias("ArcturisModel")-->
+        <property name="typeAliasesPackage" value="org.xyc.jdbc.mybatis3.spring" />
+        <!--<property name="configuration">-->
+            <!--<bean class="org.apache.ibatis.session.Configuration">-->
+                <!--<property name="mapUnderscoreToCamelCase" value="true"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+    </bean>
+
+    <!--效果上和SqlSessionDaoSupport类似-->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+        <constructor-arg index="1" value="BATCH" />
+    </bean>
+</beans>

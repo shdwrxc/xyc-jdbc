@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.xyc.jdbc.mybatis3.spring.ArcturisMapper">
+
+    <cache/>
+
+    <insert id="insert" parameterType="ArcturisModel">
+        insert into test(name, age, address) values(#{name},#{age},#{address})
+    </insert>
+
+    <update id="update" parameterType="ArcturisModel">
+        update test set name=#{name}, age=#{age}, address=#{address} where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        delete from test where id=#{id}
+    </delete>
+
+    <select id="selectOne" parameterType="Long" resultType="ArcturisModel">
+        select * from test where id=#{id}
+    </select>
+
+    <select id="selectAll" resultType="ArcturisModel">
+        select * from test
+    </select>
+
+</mapper>
