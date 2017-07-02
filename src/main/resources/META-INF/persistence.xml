@@ -1,0 +1,22 @@
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+    <!--<persistence-unit name="fengluo" transaction-type="RESOURCE_LOCAL">  -->
+    <!--<persistence-unit name="fengluo" transaction-type="JTA">-->
+    <persistence-unit name="jdbc">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <!--<class>com.cccis.base.commondao.UserModel</class>-->
+        <!--<mapping-file>orm.xml</mapping-file>-->
+        <properties>
+            <property name="hibernate.max_fetch_depth" value="3"/>
+            <property name="hibernate.jdbc.fetch_size" value="50"/>
+            <property name="hibernate.jdbc.batch_size" value="50"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+        </properties>
+    </persistence-unit>
+
+
+</persistence>
