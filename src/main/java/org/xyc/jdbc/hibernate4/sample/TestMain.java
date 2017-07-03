@@ -1,6 +1,5 @@
 package org.xyc.jdbc.hibernate4.sample;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,23 +17,24 @@ public class TestMain {
     public void before() {
         String paths[] = {"applicationContext-hibernate.xml"};
         ApplicationContext ctx = new ClassPathXmlApplicationContext(paths);
-
         testService = (TestService)ctx.getBean("testService");
     }
 
     @Test
-    public void save() {
-        TestModel testModel = new TestModel();
-        testModel.setName("abc");
-        testModel.setAge(15);
-        testModel.setAddress("hello");
-        testService.save(testModel);
+    public void testSave() {
+        testService.save();
         Assert.assertNotNull("");
     }
 
     @Test
-    public void update() {
-        testService.update(1, "mail");
+    public void testUpdate() {
+        testService.update();
+        Assert.assertNotNull("");
+    }
+
+    @Test
+    public void testSaveTwoModels() {
+        testService.saveTwoModels();
         Assert.assertNotNull("");
     }
 }

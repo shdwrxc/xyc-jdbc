@@ -14,6 +14,15 @@ public class TestModel {
     private Integer age;
     private String address;
 
+    public TestModel() {
+    }
+
+    public TestModel(String name, Integer age, String address) {
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -40,7 +40,7 @@
         <property name="packagesToScan" value="org.xyc.jdbc.hibernate4"/>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect"/>
+                <!--<property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect"/>-->
             </bean>
         </property>
         <property name="jpaProperties">
